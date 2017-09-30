@@ -1,3 +1,4 @@
+//initialize firebase
 var config = {
   apiKey: "AIzaSyAd8WgJp-oBtnbIlhjrcBpX2XH9W4gOUdE",
   authDomain: "rps-game-ed451.firebaseapp.com",
@@ -10,12 +11,13 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+//make all my variables
 var trainName = "";
 var destination = "";
 var initialArrivalTime = "";
 var frequency = 0;
 var currentTime = moment();
-var trainID = [];
+var trainIDs = [];
 var index = 0;
 
 var datetime = null;
@@ -32,6 +34,7 @@ $(document).ready(function(){
   setInterval(update, 1000);
 });
 
+//Button sumbit event
 $("#new-train").on("click", function(){
 
   trainName = $("#nameInput").val().trim();
@@ -40,22 +43,22 @@ $("#new-train").on("click", function(){
   frequency = $("#frequencyInput").val().trim();
 
 
-  var arrivalConverted = moment(initialArrivalTime, "hh:mm").subtract(1, "years");
+  var arrivalConverted = moment(initialArrivalTime, "hh:mm");
   console.log("FTC: " + arrivalConverted);
 
   var timeDifference = moment().diff(moment(arrivalConverted), "minutes");
   console.log("Difference in time: " + timeDifference);
 
-  var timeRemainder = timeDifference % frequency;
-  // console.log(tRemainder);
+  var tRemainder = timeDifference % frequency;
+    console.log(tRemainder);
 
 
-  var minutesAway = frequency - timeRemainder;
+  var minutesAway = frequency - tRemainder;
   console.log("Minutes away: " + minutesAway);
 
 
   var nextTrain = moment().add(minutesAway, "minutes");
-  // console.log("Arrival time: " + moment(nextTrain).format("hh:mm"));
+    console.log("Arrival time: " + moment(nextTrain).format("hh:mm"));
 
 
   var nextArrival = moment(nextTrain).format("hh:mm a");
@@ -65,20 +68,20 @@ $("#new-train").on("click", function(){
     datetime.html(date.format('hh:mm a'));
   }
 
-  database.ref().push({
-    trainName: trainName,
-    destination: destination,
-    initialArrivalTime: initalArrivalTime,
-    frequency: frequency,
-    minutesAway: minutesAway,
-    nextArrival: nextArrival,
-    dateAdded: firebase.database.ServerValue.TIMESTAMP
-  });
+  // database.ref().push({
+  //   trainName: trainName,
+  //   destination: destination,
+  //   initialArrivalTime: initalArrivalTime,
+  //   frequency: frequency,
+  //   minutesAway: minutesAway,
+  //   nextArrival: nextArrival,
+  //   dateAdded: firebase.database.ServerValue.TIMESTAMP
+  // });
 
   return false;
 });
 
-database.ref().orderByChild("dateAdded").limitToLast(25).on("child_added", function(snapshot) {
+database.ref().orderByChild("dateAdded").limitToLast(10).on("child_added", function(snapshot) {
 
   console.log("Train name: " + snapshot.val().trainName);
   console.log("Destination: " + snapshot.val().destination);
@@ -97,8 +100,6 @@ database.ref().orderByChild("dateAdded").limitToLast(25).on("child_added", funct
 
   index++;
 
-  }, function(errorObject) {
-    console.log("Errors handled: " + errorObject.code);
   });
 
 database.ref().once('value', function(dataSnapshot){ 
@@ -110,4 +111,4 @@ database.ref().once('value', function(dataSnapshot){
     );
 });
 
-// console.log(trainIDs);
+console.log(trainIDs);
