@@ -8,7 +8,7 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var firebase = firebase.database();
+var database = firebase.database();
 
 var trainName = "";
 var destination = "";
@@ -47,7 +47,7 @@ $("#new-train").on("click", function(){
   console.log("Difference in time: " + timeDifference);
 
   var timeRemainder = timeDifference % frequency;
-  console.log(tRemainder);
+  // console.log(tRemainder);
 
 
   var minutesAway = frequency - timeRemainder;
@@ -55,7 +55,7 @@ $("#new-train").on("click", function(){
 
 
   var nextTrain = moment().add(minutesAway, "minutes");
-  console.log("Arrival time: " + moment(nextTrain).format("hh:mm"));
+  // console.log("Arrival time: " + moment(nextTrain).format("hh:mm"));
 
 
   var nextArrival = moment(nextTrain).format("hh:mm a");
@@ -110,4 +110,4 @@ database.ref().once('value', function(dataSnapshot){
     );
 });
 
-console.log(trainIDs);
+// console.log(trainIDs);
